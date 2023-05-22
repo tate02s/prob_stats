@@ -55,5 +55,13 @@ plt.plot(binom_pmf)
 plt.show()
 
 # Now perform a Students T-test to see wether there is strong enough evidence that the coin is in fact biased. Reject the Null Hypothesis (coin sample experiment is from the same distribution as a fair coin) at the 0.05 level
-tTest = scipy.stats.ttest_1samp(a=posterior.qs, popmean=binom_pmf.qs.mean())
+# For a t test to take place, samples need to be drawn from the experimental distribution, then the mean of that sample needs to be compared to the population mean. If the probability of that sample mean is less than
+# some threshold probability (usually 5%), then is it unlikely the distribution the samples points are from is the same as the population distribution. The Null Hypothesis is then rejected.
+
+# Draws 250 sample point from the experimental coin pmf
+experimentalPmfSamplePoints = posterior.sample(trials)
+
+# Performs a t test, to quantify the probability that the sample points are generated from the population distribution (binomial distribution with prob=0.5 for 250 trials)
+tTest = scipy.stats.ttest_1samp(a=experimentalPmfSamplePoints, popmean=binom_pmf.qs.mean())
+print(f'Sample mean: {experimentalPmfSamplePoints.mean()}')
 print(tTest)
